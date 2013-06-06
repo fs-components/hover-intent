@@ -65,67 +65,76 @@ function hoverIntent(element, cfg) {
 
   // A private function for getting mouse position
   var track = function(ev) {
-    cX = ev.pageX;
-    cY = ev.pageY;
+    if (typeof ev.pageX !== 'undefined') {
+      cX = ev.pageX;
+      cY = ev.pageY;
+    } else {
+      cX = ev.clientX;
+      cY = ev.clientY;
+    }
   };
 
   // A private function for comparing current and previous mouse position
-  var compare = function(ev, ob) {
+  var compare = function(ev) {
     timeout = clearTimeout(timeout);
     // compare mouse positions to see if they've crossed the threshold
     if ( ( Math.abs(pX-cX) + Math.abs(pY-cY) ) < cfg.sensitivity ) {
-      events.unbind(ob, "mousemove", track);
+      events.unbind(element, "mousemove", track);
       // set hoverIntent state to true (so mouseOut can be called)
       state = 1;
-      return cfg.over.apply(ob, [ev]);
+      return cfg.over.apply(element, [ev]);
     } else {
       // set previous coordinates for next time
       pX = cX; pY = cY;
       // use self-calling timeout, guarantees intervals are spaced out properly (avoids JavaScript timer bugs)
-      timeout = setTimeout( function(){compare(ev, ob);} , cfg.interval );
+      timeout = setTimeout( function(){compare(ev);} , cfg.interval );
     }
   };
 
   // A private function for delaying the mouseOut function
-  var delay = function(ev, ob) {
+  var delay = function(ev) {
     timeout = clearTimeout(timeout);
     state = 0;
-    return cfg.out.apply(ob, [ev]);
+    return cfg.out.apply(element, [ev]);
   };
 
   var handleEnter = function(e) {
     // copy objects to be passed into t (required for event object to be passed in IE)
     var ev = extend({}, e);
-    var ob = this;
 
     // cancel hoverIntent timer if it exists
     if (timeout) { timeout = clearTimeout(timeout); }
 
     // set "previous" X and Y position based on initial entry point
-    pX = ev.pageX; pY = ev.pageY;
+    if (typeof ev.pageX !== 'undefined') {
+      pX = cX = ev.pageX;
+      pY = cY = ev.pageY;
+    } else {
+      pX = cX = ev.clientX;
+      pY = cY = ev.clientY;
+    }
     // update "current" X and Y position based on mousemove
-    events.bind(ob, "mousemove", track);
+    events.bind(element, "mousemove", track);
     // start polling interval (self-calling timeout) to compare mouse coordinates over time
-    if (state != 1) { timeout = setTimeout( function(){compare(ev, ob);} , cfg.interval );}
+    if (state != 1) { timeout = setTimeout( function(){compare(ev);} , cfg.interval );}
   };
 
   // A private function for handling mouse 'hovering'
   var handleOut = function(e) {
     // copy objects to be passed into t (required for event object to be passed in IE)
     var ev = extend({}, e);
-    var ob = this;
 
     // cancel hoverIntent timer if it exists
     if (timeout) { timeout = clearTimeout(timeout); }
 
     // unbind expensive mousemove event
-    events.unbind(ob, "mousemove", track);
+    events.unbind(element, "mousemove", track);
     // if hoverIntent state is true, then call the mouseOut function after the specified delay
-    if (state == 1) { timeout = setTimeout( function(){delay(ev, ob);} , cfg.timeout );}
+    if (state == 1) { timeout = setTimeout( function(){delay(ev);} , cfg.timeout );}
   };
 
   // listen for mouseenter and mouseout
-  if ('mouseenter' in element) {
+  if ('onmouseenter' in element) {
     events.bind(element, 'mouseenter', handleEnter);
     events.bind(element, 'mouseleave', handleOut);
   } else {

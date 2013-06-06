@@ -4,7 +4,7 @@
     <title>HoverIntent Example</title>
 
     <script type="text/javascript" src="../build/build.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <!-- DEMO CSS -->
     <style type="text/css" media="screen">
       /* styles for the demo examples -- NOT REQUIRED for hoverIntent to work, just for demo purposes */
@@ -40,12 +40,10 @@
           $("#forgot-build").show();
         } else {
           hoverIntent = require('hoverIntent');
-          require('query-qwery');
-          query = require('query');
 
           $("#demo1 li").hover(makeTall,makeShort);
-          hoverIntent(query.all("#demo2 li"), makeTall, makeShort);
-          hoverIntent(query.all("#demo3 li"), toggleHeight);
+          hoverIntent($("#demo2 li"), makeTall, makeShort);
+          hoverIntent($("#demo3 li"), toggleHeight);
         }
       }); // close document.ready
 
