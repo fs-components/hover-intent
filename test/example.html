@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>HoverIntent Example</title>
+
+    <script type="text/javascript" src="../build/build.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+    <!-- DEMO CSS -->
+    <style type="text/css" media="screen">
+      /* styles for the demo examples -- NOT REQUIRED for hoverIntent to work, just for demo purposes */
+      #RESOURCES #main .demo li { padding-bottom: 0; }
+      ul.demo {display:block; width:100%; height:75px; padding:0;
+      margin:0; background:#9cc; list-style-type:none;}
+      ul.demo li {background:#fcc; display:block; width:25%;
+      height:50px; padding:0; margin:0; float: left;
+      position:relative; overflow:hidden; cursor:default;
+      font-size:0.9em; line-height:1.1em;}
+      ul.demo li.p2 {background:#ffc;}
+      ul.demo li.p3 {background:#cfc;}
+      ul.demo li.p4 {background:#ccf;}
+      ul.demo li span { display:block; margin:4px; background:#eef; cursor:default;}
+      #forgot-build {
+        display: none;
+        color: #f55;
+        background-color: #fef0;
+        border: 5px solid #777;
+        text-align: center;
+      }
+      body {
+        font-family: Helvetica, arial, sans-serif;
+        padding: 20px 150px;
+      }
+    </style>
+
+    <!-- DEMO JS -->
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function(){
+        var hoverIntent, query;
+        if (!window.require) {
+          $("#forgot-build").show();
+        } else {
+          hoverIntent = require('hoverIntent');
+          require('query-qwery');
+          query = require('query');
+
+          $("#demo1 li").hover(makeTall,makeShort);
+          hoverIntent(query.all("#demo2 li"), makeTall, makeShort);
+          hoverIntent(query.all("#demo3 li"), toggleHeight);
+        }
+      }); // close document.ready
+
+      function makeTall(){$(this).animate({"height":75},200);}
+      function makeShort(){$(this).animate({"height":50},200);}
+      function toggleHeight(){var h=(parseInt($(this).css('height'),10) > 50) ? 50 : 75; $(this).animate({"height":h},200);}
+    </script>
+  </head>
+  <body>
+    <h1>HoverIntent</h1>
+    <h2>Examples</h2>
+
+    <div id="forgot-build">
+      <h1>Looks like you forgot to build, or the component otherwise failed to load properly. Please try again.</h1>
+    </div>
+
+    <noscript><p><em>If you can see this message <strong>JavaScript is
+    disabled</strong>. This plug-in requires JavaScript to be enabled
+    in order for the examples to work. (This is really a note to
+    myself so the next time I look at my web site with JavaScript
+    accidentally turned off I don't freak out and wonder why it's not
+    working)</em></p></noscript>
+
+    <h3>jQuery's hover (for reference)</h3>
+    <pre>hoverIntent(query.all("#demo1 li"), makeTall, makeShort );</pre>
+    <ul class="demo" id="demo1">
+      <li class="p1">&nbsp;</li>
+      <li class="p2">&nbsp;</li>
+      <li class="p3">&nbsp;</li>
+      <li class="p4"><span>hover ignores over/out events from children</span></li>
+    </ul>
+    <p>jQuery's built-in hover calls handlerIn and handlerOut
+    functions immediately. If you move your cursor back and forth
+    quickly across the tiles you'll see how the immediate execution
+    can lead to problems.</p>
+
+    <h3>hoverIntent( element, handlerIn, handlerOut )</h3>
+    <pre>hoverIntent(query.all("#demo2 li"), makeTall, makeShort );</pre>
+    <ul class="demo" id="demo2">
+      <li class="p1">&nbsp;</li>
+      <li class="p2">&nbsp;</li>
+      <li class="p3">&nbsp;</li>
+      <li class="p4"><span>hoverIntent also ignores over/out events from children</span></li>
+    </ul>
+    <p>hoverIntent is interchangeable with jQuery's hover. It can use
+    the same exact handlerIn and handlerOut functions. It passes the
+    same <strong>this</strong> and <strong>event</strong> objects to
+    those functions.</p>
+
+    <h3>hoverIntent( example, handlerInOut )</h3>
+    <pre>hoverIntent(query.all("#demo3 li"), toggleHeight );</pre>
+    <ul class="demo" id="demo3">
+      <li class="p1">&nbsp;</li>
+      <li class="p2">&nbsp;</li>
+      <li class="p3">&nbsp;</li>
+      <li class="p4">&nbsp;</li>
+    </ul>
+    <p>hoverIntent can also take a single handlerInOut, just like jQuery's hover.</p>
+    <p>To control hoverIntent more precisely and override the default
+    configuration options, pass it an object as the first
+    parameter. The object must at least contain an "over" function. If
+    the "over" function is sent alone, it will act just like
+    handlerInOut.</p>
+
+
+    <h2>Common Configuration Options</h2>
+    <p>These are the common options you'll want to use. Note, nothing
+    prevents you from
+    sending <a href="http://api.jquery.com/jQuery.noop/">an empty
+    function</a> as the handlerIn or handlerOut functions.</p>
+
+    <h3>over:</h3>
+    <p>Required. The handlerIn function you'd like to call on
+    "mouseenter with intent". Your function receives the same "this"
+    and "event" objects as it would from jQuery's hover method. If the
+    "over" function is sent alone (without "out") then it will be used
+    in both cases like the handlerInOut param.</p>
+
+    <h3>out:</h3>
+    <p>The handlerOut function you'd like to call on "mouseleave after
+    timeout". Your function receives the same "this" and "event"
+    objects as it would from jQuery's hover method. Note, hoverIntent
+    will only call the "out" function if the "over" function has been
+    called.</p>
+
+    <h3>timeout:</h3>
+    <p>A simple delay, in milliseconds, before the "out" function is
+    called. If the user mouses back over the element before the
+    timeout has expired the "out" function will not be called (nor
+    will the "over" function be called). This is primarily to protect
+    against sloppy/human mousing trajectories that temporarily (and
+    unintentionally) take the user off of the target element... giving
+    them time to return. <em>Default timeout: 0</em></p>
+
+
+    <h2>Advanced Configuration Options</h2>
+    <p>Modify these if you are brave, test tirelessly, and completely
+    understand what you are doing. When choosing the default settings
+    for hoverIntent I tried to find the best possible balance between
+    responsiveness and frequency of false positives.</p>
+
+    <h3>sensitivity:</h3>
+    <p>If the mouse travels fewer than this number of pixels between
+    polling intervals, then the "over" function will be called. With
+    the minimum sensitivity threshold of 1, the mouse must not move
+    between polling intervals. With higher sensitivity thresholds you
+    are more likely to receive a false positive. <em>Default
+    sensitivity: 7</em></p>
+
+    <h3>interval:</h3>
+    <p>The number of milliseconds hoverIntent waits between
+    reading/comparing mouse coordinates. When the user's mouse first
+    enters the element its coordinates are recorded. The soonest the
+    "over" function can be called is after a single polling
+    interval. Setting the polling interval higher will increase the
+    delay before the first possible "over" call, but also increases
+    the time to the next point of comparison. <em>Default interval:
+    100</em></p>
+
+  </body>
+</html>

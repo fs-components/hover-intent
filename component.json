@@ -1,0 +1,23 @@
+{
+  "name": "hoverIntent",
+  "repo": "fs-components/hoverIntent",
+  "description": "jquery.hoverIntent ported to component land",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {
+    "component/event": "*",
+    "JayceTDE/mouse-inout": "*",
+    "gorillatron/extend": "*",
+    "component/query": "*",
+    "jamischarles/query-qwery": "*"
+  },
+  "development": {
+    "component/query": "*",
+    "jamischarles/query-qwery": "*"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}
