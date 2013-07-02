@@ -1,6 +1,6 @@
 {
-  "name": "hoverIntent",
-  "repo": "fs-components/hoverIntent",
+  "name": "hover-intent",
+  "repo": "fs-components/hover-intent",
   "description": "jquery.hoverIntent ported to component land",
   "version": "0.0.1",
   "keywords": [],
